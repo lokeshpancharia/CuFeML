@@ -1,0 +1,69 @@
+================================================================================
+Cu-Fe HEA COMPRESSIVE STRENGTH PREDICTION - RESULTS ANALYSIS
+================================================================================
+
+DATASET SUMMARY
+----------------------------------------
+Total samples: 305
+Features: 81
+Test samples: 61
+Target range: 18.0 - 3620.0 MPa
+Target mean: 1141.1 MPa
+Target std: 630.3 MPa
+
+BEST MODEL PERFORMANCE
+----------------------------------------
+Best model: XGBoost
+Cross-validation RMSE: 407.42 ± 75.95
+Test RMSE: 335.76
+Test MAE: 225.41
+Test R²: 0.637
+
+TOP 10 MOST IMPORTANT FEATURES
+----------------------------------------
+mixing_entropy: 0.2452
+Cr: 0.1636
+Al: 0.1548
+BCC: 0.1235
+Mo: 0.0667
+Fe: 0.0654
+plasticity: 0.0566
+Mn: 0.0471
+Ni: 0.0325
+hardness: 0.0319
+
+MODEL COMPARISON
+----------------------------------------
+Random Forest:
+  Test RMSE: 306.62
+  Test R²: 0.697
+SVR:
+  Test RMSE: 460.27
+  Test R²: 0.317
+XGBoost:
+  Test RMSE: 335.76
+  Test R²: 0.637
+Ensemble:
+  Test RMSE: 336.06
+  Test R²: 0.636
+
+KEY INSIGHTS
+----------------------------------------
+• Composition features dominate: Cr, Al
+• Phase structure is important: BCC
+• Derived features provide value: mixing_entropy
+• Model achieves 29.4% relative error on average
+• Good model performance (R² > 0.5)
+
+FILES GENERATED
+----------------------------------------
+• results/analysis/feature_importance.csv
+• results/analysis/feature_correlations.csv
+• results/analysis/model_metrics_comparison.csv
+• results/analysis/prediction_errors.csv
+• results/analysis/predictions_vs_actual.png
+• results/analysis/feature_importance.png
+• results/analysis/feature_correlations.png
+• results/analysis/residual_analysis.png
+• results/analysis/model_comparison.png
+• results/analysis/error_analysis.png
