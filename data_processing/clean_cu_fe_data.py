@@ -240,6 +240,11 @@ def final_cleanup(df: pd.DataFrame) -> pd.DataFrame:
     """Final cleanup and feature selection."""
     print("\n=== Final cleanup ===")
     
+    # Keep Source column for reference but move it to the end
+    source_col = None
+    if 'Source' in df.columns:
+        source_col = df['Source'].copy()
+    
     # Drop non-numeric columns that won't be used for modeling
     columns_to_drop = [
         'Id', 'Composition', 'Phases present', 
@@ -274,6 +279,11 @@ def final_cleanup(df: pd.DataFrame) -> pd.DataFrame:
             median_val = df_final[col].median()
             df_final[col] = df_final[col].fillna(median_val)
             print(f"Replaced infinite values in {col} with median: {median_val}")
+    
+    # Add Source column back at the end for reference
+    if source_col is not None:
+        df_final['Source'] = source_col
+        print("Source column preserved for DOI reference")
     
     print(f"Final dataset shape: {df_final.shape}")
     print(f"Final missing values: {df_final.isnull().sum().sum()}")
