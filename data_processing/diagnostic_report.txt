@@ -1,0 +1,15 @@
+DIAGNOSTIC ANALYSIS REPORT - Compressive Strength Prediction
+======================================================================
+
+KEY FINDINGS:
+--------------------
+- High target variability (CV = 0.531) makes prediction challenging
+- High overfitting detected (avg = 0.319)
+
+RECOMMendations:
+--------------------
+- Consider target transformation or stratified sampling
+- Use stronger regularization and cross-validation
+- Collect more high-quality training data
+- Investigate data quality and outliers
+- Consider ensemble methods with different algorithms

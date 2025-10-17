@@ -1,0 +1,25 @@
+BEST ML EXPERIMENTS - Compressive Strength Prediction
+============================================================
+
+Dataset: 242 samples
+Target: Compressive Strength (108.6 - 3620.0 MPa)
+Goal: R² >= 0.85
+
+MODEL PERFORMANCE RANKING:
+----------------------------------------
+1. Best Random Forest
+   R² = 0.5877 | RMSE = 389.3 MPa | NEEDS IMPROVEMENT
+
+2. Best XGBoost
+   R² = 0.5099 | RMSE = 424.5 MPa | NEEDS IMPROVEMENT
+
+3. Best LightGBM
+   R² = 0.4727 | RMSE = 440.3 MPa | NEEDS IMPROVEMENT
+
+SUMMARY:
+--------------------
+Best Model: Best Random Forest
+Best R² Score: 0.5877
+Best RMSE: 389.3 MPa
+
+Target not reached. Gap: 0.2623
