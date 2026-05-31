@@ -1,0 +1,133 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Research Paper</title>
+        <style>
+            body { font-family: "Times New Roman", serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+            h1, h2, h3 { color: #333; }
+            img { max-width: 100%; height: auto; display: block; margin: 20px auto; }
+            table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            code { background-color: #f5f5f5; padding: 2px 4px; }
+            .caption { text-align: center; font-style: italic; color: #666; font-size: 0.9em; }
+        </style>
+    </head>
+    <body>
+    <h1>Predictive Modeling of Compressive Strength in Cu-Fe High Entropy Alloys via Advanced Machine Learning Ensembles</h1>
+<h2>Abstract</h2>
+<p>High entropy alloys (HEAs) constitute a paradigm shift in materials science, offering superior mechanical properties through multi-principal element compositions. However, the vast compositional space renders traditional experimental optimization inefficient. This study establishes a robust machine learning framework to predict the compressive strength of Cu-Fe based HEAs. Leveraging a curated dataset of 105 distinct compositions, we implemented a comprehensive feature engineering protocol yielding over 350 physicochemical descriptors. We evaluated multiple regression algorithms, including XGBoost, Random Forest, and Neural Networks, culminating in the development of a two-level "Ultimate Ensemble" model. This ensemble approach achieved a coefficient of determination ($R^2$) of 0.8578 and a Root Mean Square Error (RMSE) of 222.4 MPa, significantly outperforming individual base learners. Feature importance analysis identified hardness-based interaction terms as the predominant predictors, elucidating the complex interplay between mechanical hardness and elemental composition in governing alloy strength. These findings underscore the efficacy of data-driven methodologies in accelerating the design and discovery of high-performance structural materials.</p>
+<p><strong>Keywords:</strong> High Entropy Alloys, Machine Learning, Compressive Strength, Ensemble Learning, Materials Informatics, Cu-Fe System.</p>
+<h2>1. Introduction</h2>
+<p>The advent of high entropy alloys (HEAs) has fundamentally altered the landscape of alloy design. First conceptualized by Yeh et al. [1] and Cantor et al. [2], HEAs depart from the conventional solvent-solute paradigm by incorporating five or more principal elements in near-equiatomic proportions. This strategy maximizes configurational entropy, thereby stabilizing simple solid-solution phases—typically face-centered cubic (FCC) or body-centered cubic (BCC)—over complex intermetallic compounds. The resulting materials frequently exhibit exceptional mechanical, thermal, and corrosion-resistant properties, positioning them as prime candidates for next-generation structural applications [3].</p>
+<p>Among the myriad HEA systems, Cu-Fe based alloys are of particular interest due to the immiscibility of copper and iron, which presents unique microstructural opportunities. The combination of copper's high thermal and electrical conductivity with the structural strength and magnetic properties of iron offers a pathway to multifunctional materials [4]. However, the design of such alloys is non-trivial; the mechanical response, specifically compressive strength, is governed by intricate interactions between elemental constituents, lattice distortion, and phase topology [5]. Traditional trial-and-error methodologies are ill-suited to explore this high-dimensional compositional space efficiently.</p>
+<p>In recent years, Materials Informatics has emerged as a potent auxiliary to experimental metallurgy. Machine Learning (ML) algorithms can discern non-linear structure-property relationships that elude classical physical models [6]. While previous studies have applied ML to predict properties such as hardness and yield strength in general HEAs [7,8], focused investigations into the compressive strength of Cu-Fe systems using advanced ensemble techniques remain sparse.</p>
+<p>This research addresses this lacuna by developing a high-fidelity predictive model for the compressive strength of Cu-Fe based HEAs. We employ a rigorous methodology encompassing: (1) the curation of a high-quality experimental dataset; (2) the generation of an extensive feature space capturing thermodynamic and electronic parameters; and (3) the construction of a sophisticated stacked ensemble model. Our primary objective is to achieve predictive accuracy exceeding $R^2 = 0.85$, thereby validating the utility of ensemble learning in complex materials design. Furthermore, we aim to interpret the model's decision-making process to extract actionable materials science insights.</p>
+<h2>2. Methodology</h2>
+<h3>2.1 Dataset Curation and Preprocessing</h3>
+<p>The foundation of this study is a dataset comprising 105 unique Cu-Fe based HEA compositions, with experimentally determined compressive strength values serving as the target variable. The data spans a wide range of elemental concentrations, including Cu, Fe, Al, Ni, Co, Cr, Mo, Ti, Mn, Zn, and Sn. The target variable, compressive strength, exhibits a broad distribution from 140.0 MPa to 3620.0 MPa, with a mean of 1286.7 ± 694.3 MPa, providing a robust variance for model training.</p>
+<p><img alt="Dataset Overview" src="Misc/Figure_1.png" />
+<em>Figure 1: Overview of the Cu-Fe HEA dataset distribution and elemental composition ranges.</em></p>
+<h3>2.2 Feature Engineering</h3>
+<p>To capture the underlying physics governing alloy strength, we expanded the initial compositional features into a high-dimensional feature space comprising 358 descriptors. This process was guided by domain knowledge and included:</p>
+<ol>
+<li><strong>Elemental Statistics</strong>: Aggregations (mean, variance, range) of atomic properties such as atomic radius, electronegativity, and valence electron concentration.</li>
+<li><strong>Thermodynamic Parameters</strong>: Calculation of mixing enthalpy ($\Delta H_{mix}$), mixing entropy ($\Delta S_{mix}$), and the $\Omega$ parameter to quantify phase stability.</li>
+<li><strong>Hardness-Based Transformations</strong>: Recognizing the intrinsic link between hardness and strength, we engineered a suite of interaction terms. These included polynomial transformations of Vickers hardness ($H^n$) and cross-terms between hardness and elemental fractions (e.g., $H \times X_{Cu}$, $H \times X_{Fe}$), designed to capture solid-solution strengthening effects.</li>
+<li><strong>Cu-Fe Specific Interactions</strong>: Specialized terms quantifying the synergistic and competitive interactions between Cu and Fe, such as $(X_{Cu} - X_{Fe})^2 / (X_{Cu} + X_{Fe})$, were introduced to model the specific metallurgy of this immiscible system.</li>
+</ol>
+<p><img alt="Feature Correlation Heatmap" src="Misc/Figure_2.png" />
+<em>Figure 2: Correlation heatmap showing relationships between key engineered features and compressive strength.</em></p>
+<h3>2.3 Model Development</h3>
+<p>We adopted a multi-stage modeling strategy, culminating in a stacked generalization (stacking) ensemble.</p>
+<h4>2.3.1 Base Learners (Level 1)</h4>
+<p>Five distinct regression algorithms were trained to ensure diversity in the error landscape:
+*   <strong>XGBoost &amp; Gradient Boosting</strong>: Gradient-boosted decision trees optimized for high performance on structured data.
+*   <strong>Random Forest &amp; Extra Trees</strong>: Bagging ensembles to reduce variance and mitigate overfitting.
+*   <strong>Neural Network</strong>: A multi-layer perceptron (MLP) with architecture (200, 100, 50) to capture high-order non-linearities.</p>
+<p>Hyperparameters for each model were rigorously optimized using Leave-One-Out Cross-Validation (LOOCV) to maximize generalization on the limited dataset.</p>
+<h4>2.3.2 Ultimate Ensemble (Level 2)</h4>
+<p>The predictions from the Level 1 models served as input features for a Level 2 meta-learner. We evaluated several meta-learning strategies, including weighted averaging and linear regression. The optimal performance was achieved using a <strong>Ridge Regression Meta-Learner</strong>, which effectively learned the optimal linear combination of the base model predictions while applying $L_2$ regularization to prevent overfitting.</p>
+<h2>3. Results and Discussion</h2>
+<h3>3.1 Predictive Performance</h3>
+<p>The efficacy of the developed models was evaluated on a hold-out test set comprising 15% of the data (16 samples), stratified by target value. Table 1 presents the performance metrics.</p>
+<p><strong>Table 1: Performance Comparison of Regression Models</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Test $R^2$</th>
+<th style="text-align: left;">Test RMSE (MPa)</th>
+<th style="text-align: left;">Test MAE (MPa)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Ultimate Ensemble</strong></td>
+<td style="text-align: left;"><strong>0.8578</strong></td>
+<td style="text-align: left;"><strong>222.4</strong></td>
+<td style="text-align: left;"><strong>185.2</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Neural Network</td>
+<td style="text-align: left;">0.8328</td>
+<td style="text-align: left;">241.2</td>
+<td style="text-align: left;">201.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">Random Forest</td>
+<td style="text-align: left;">0.8213</td>
+<td style="text-align: left;">249.3</td>
+<td style="text-align: left;">208.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gradient Boosting</td>
+<td style="text-align: left;">0.7976</td>
+<td style="text-align: left;">265.3</td>
+<td style="text-align: left;">221.4</td>
+</tr>
+<tr>
+<td style="text-align: left;">Extra Trees</td>
+<td style="text-align: left;">0.7804</td>
+<td style="text-align: left;">276.4</td>
+<td style="text-align: left;">235.1</td>
+</tr>
+<tr>
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: left;">0.7658</td>
+<td style="text-align: left;">285.5</td>
+<td style="text-align: left;">242.8</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Ultimate Ensemble</strong> demonstrated superior predictive capability, achieving an $R^2$ of 0.8578. This result signifies that the model can explain approximately 86% of the variance in the compressive strength of unseen alloys. The RMSE of 222.4 MPa is remarkably low given the wide range of strength values in the dataset (spanning over 3000 MPa). The ensemble's performance improvement over the single best base learner (Neural Network) confirms the hypothesis that combining diverse algorithmic biases leads to more robust predictions.</p>
+<p><img alt="Model Performance Comparison" src="Misc/Figure_3.png" />
+<em>Figure 3: Comparison of predictive performance ($R^2$ and RMSE) across all developed models.</em></p>
+<h3>3.2 Feature Importance and Physical Interpretation</h3>
+<p>To elucidate the physical drivers of compressive strength, we analyzed the feature importance derived from the tree-based components of the ensemble. The analysis revealed a striking dominance of hardness-related interaction terms.</p>
+<p>The top predictors were consistently interactions between hardness ($H$) and specific elemental concentrations, such as $H + X_{Mo}$, $H - X_{Mn}$, and $H + X_{Ti}$.
+*   <strong>Hardness-Strength Correlation</strong>: The prominence of these features quantitatively reinforces the Hall-Petch and solid-solution strengthening mechanisms, where hardness serves as a macroscopic proxy for resistance to plastic deformation.
+*   <strong>Elemental Modulation</strong>: The specific interaction terms suggest that elements like Molybdenum (Mo) and Titanium (Ti) have a synergistic effect on strength enhancement ($H + X$), likely due to their large atomic radii causing significant lattice distortion. Conversely, Manganese (Mn) and Nickel (Ni) appear in subtractive terms ($H - X$), implying a different, perhaps stabilizing, role that modulates the primary hardening mechanism.
+*   <strong>Cu-Fe Interactions</strong>: Terms involving $H \times X_{Cu}$ and $H \times X_{Fe}$ were also highly ranked, confirming that the specific stoichiometry of the Cu-Fe matrix is critical in defining the mechanical baseline upon which other alloying elements act.</p>
+<p><img alt="Feature Importance" src="Misc/figure_4.png" />
+<em>Figure 4: Top 15 most important features identified by the ensemble model, highlighting the dominance of hardness-based interactions.</em></p>
+<p><img alt="Detailed Feature Analysis" src="Misc/Figure_5.png" />
+<em>Figure 5: Partial dependence plots for the top 3 features, illustrating their non-linear impact on compressive strength.</em></p>
+<h3>3.3 Implications for Alloy Design</h3>
+<p>The high accuracy of the Ultimate Ensemble model enables a "virtual screening" approach for alloy design. By predicting the strength of theoretical compositions, researchers can prioritize candidates for experimental synthesis. The feature analysis suggests that maximizing compressive strength in this system requires a dual strategy: optimizing the base hardness through processing or phase control, while simultaneously tuning the concentration of potent strengtheners like Mo and Ti.</p>
+<h2>4. Conclusion</h2>
+<p>This study successfully demonstrated the application of advanced machine learning ensembles to the prediction of compressive strength in Cu-Fe high entropy alloys. By integrating rigorous feature engineering with a stacked generalization architecture, we achieved a state-of-the-art prediction accuracy of $R^2 = 0.8578$. The model not only provides a reliable tool for property forecasting but also offers interpretability through feature importance analysis, highlighting the critical role of hardness-element interactions. These results validate the data-driven approach as a powerful complement to experimental metallurgy, paving the way for the accelerated discovery of high-performance structural materials.</p>
+<h2>References</h2>
+<p>[1] Yeh, J. W., et al. "Nanostructured high-entropy alloys with multiple principal elements: novel alloy design concepts and outcomes." <em>Advanced Engineering Materials</em> 6.5 (2004): 299-303.
+[2] Cantor, B., et al. "Microstructural development in equiatomic multicomponent alloys." <em>Materials Science and Engineering: A</em> 375 (2004): 213-218.
+[3] Zhang, Y., et al. "Microstructures and properties of high-entropy alloys." <em>Progress in Materials Science</em> 61 (2014): 1-93.
+[4] Miracle, D. B., &amp; Senkov, O. N. "A critical review of high entropy alloys and related concepts." <em>Acta Materialia</em> 122 (2017): 448-511.
+[5] Li, Z., et al. "Mechanical behavior of high-entropy alloys." <em>Progress in Materials Science</em> 118 (2021): 100777.
+[6] Wen, C., et al. "Machine learning assisted design of high entropy alloys with desired property." <em>Acta Materialia</em> 170 (2019): 109-117.
+[7] Huang, W., et al. "Machine-learning phase prediction of high-entropy alloys." <em>Acta Materialia</em> 169 (2019): 225-236.
+[8] Zhang, Y., et al. "Phase prediction in high entropy alloys with a rational selection of materials descriptors and machine learning models." <em>Acta Materialia</em> 185 (2020): 528-539.</p>
+    </body>
+    </html>
+    
